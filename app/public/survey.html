@@ -37,7 +37,7 @@
             <h2><strong>Please select which of the following best applies to you</strong></h2>
             <div class="form-group">
                 <label for="">Your mind is always buzzing with unexplored ideas and plans.</label>
-                <select class="chosen-select" id="q1">
+                <select class="select" id="q1">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label for="">Generally speaking, you rely more on your experience than your imagination.</label>
-                <select class="chosen-select" id="q2">
+                <select class="select" id="q2">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -59,7 +59,7 @@
             </div>
             <div class="form-group">
                 <label for="">You find it easy to stay relaxed and focused even when there is some pressure.</label>
-                <select class="chosen-select" id="q3">
+                <select class="select" id="q3">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -70,7 +70,7 @@
             </div>
             <div class="form-group">
                 <label for="">You rarely do something just out of sheer curiosity.</label>
-                <select class="chosen-select" id="q4">
+                <select class="select" id="q4">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -81,7 +81,7 @@
             </div>
             <div class="form-group">
                 <label for="">People can rarely upset you.</label>
-                <select class="chosen-select" id="q5">
+                <select class="select" id="q5">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -92,7 +92,7 @@
             </div>
             <div class="form-group">
                 <label for="">It is often difficult for you to relate to other people’s feelings.</label>
-                <select class="chosen-select" id="q6">
+                <select class="select" id="q6">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -103,7 +103,7 @@
             </div>
             <div class="form-group">
                 <label for="">In a discussion, truth should be more important than people’s sensitivities.</label>
-                <select class="chosen-select" id="q7">
+                <select class="select" id="q7">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -114,7 +114,7 @@
             </div>
             <div class="form-group">
                 <label for="">You rarely get carried away by fantasies and ideas.</label>
-                <select class="chosen-select" id="q8">
+                <select class="select" id="q8">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -125,7 +125,7 @@
             </div>
             <div class="form-group">
                 <label for="">You think that everyone’s views should be respected regardless of whether they are supported by facts or not.</label>
-                <select class="chosen-select" id="q9">
+                <select class="select id="q9">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -136,7 +136,7 @@
             </div>
             <div class="form-group">
                 <label for="">You feel more energetic after spending time with a group of people.</label>
-                <select class="chosen-select" id="q10">
+                <select class="select" id="q10">
                     <option value=""></option>
                     <option value="1">1 (Strongly Disagree)</option>
                     <option value="2">2</option>
@@ -157,7 +157,7 @@
             </div>
             <div class="modal-body">
               <h2 id="match-name"></h2>
-              <img id="match-img" src="" alt="">
+              <img id="match-img" src="" alt="" style="max-width: 350px;">
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -168,7 +168,71 @@
 
     
     <script type="text/javascript">
-        var config = {
+
+        $(document).ready(function() {
+            $("#submit").on("click", function() {
+
+                function newForm() {
+                    var completeForm = true;
+                    $(".form-control").each(function() {
+                        if ($(this).val() === ""){
+                            completeForm = false;
+                        }
+                    });
+                    $(".select").each(function() {
+                        if ($(this).val() === ""){
+                            completeForm = false;
+                        }
+                    });
+                    return completeForm;
+                }
+
+                if (newForm() == true) {
+                    var newFriend = {
+                        name: $("#name").val().trim(),
+                        photo: $("#photo").val().trim(),
+                        scores: [
+                            $("#q1").val(),
+                            $("#q2").val(),
+                            $("#q3").val(),
+                            $("#q4").val(),
+                            $("#q5").val(),
+                            $("#q6").val(),
+                            $("#q7").val(),
+                            $("#q8").val(),
+                            $("#q9").val(),
+                            $("#q10").val()
+                        ]
+                    };
+
+                    var currentURL = window.location.origin;
+
+                    $.post(currentURL + "/api/friends", newFriend, function(data) {
+                        $("#match-name").text(data.name);
+                        $("#match-img").attr("src", data.photo);
+                        $("#results-modal").modal("toggle");
+                    });
+                    
+                    $("#name").val("");
+                    $("#photo").val("");
+                    $("#q1").val();
+                    $("#q2").val();
+                    $("#q3").val();
+                    $("#q4").val();
+                    $("#q5").val();
+                    $("#q6").val();
+                    $("#q7").val();
+                    $("#q8").val();
+                    $("#q9").val();
+                    $("#q10").val();
+
+                } else {
+                    alert("Please complete all fields. Thank you.")
+                }
+            });
+        });
+
+        /*var config = {
             ".chosen-select": {},
             ".chosen-select-deselect": {
                 allow_single_deselect: true
@@ -238,7 +302,8 @@
             } else {
                 alert("Please fill out all fields!");
             }
-        });
+        });*/
+        
     </script>
 </body>
 </html>
